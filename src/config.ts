@@ -3,23 +3,35 @@ import {existsSync, readFileSync} from 'fs';
 import path from 'path';
 import {banner} from './banner';
 
-if (process.env.npm_config_conf) {
-  if (
-    existsSync(path.resolve(__dirname, '../../' + process.env.npm_config_conf))
-  ) {
-    dotenv.config({
-      path: path.resolve(__dirname, '../../' + process.env.npm_config_conf),
-    });
-  } else {
-    dotenv.config({path: path.resolve(__dirname, '../../.env')});
+export function getActiveConfigPath() {
+  if (process.env.npm_config_conf) {
+    const configuredPath = path.resolve(
+      __dirname,
+      '../../' + process.env.npm_config_conf
+    );
+    if (existsSync(configuredPath)) {
+      return configuredPath;
+    }
+
+    return path.resolve(__dirname, '../../.env');
   }
-} else if (existsSync(path.resolve(__dirname, '../../dotenv'))) {
-  dotenv.config({path: path.resolve(__dirname, '../../dotenv')});
-} else if (existsSync(path.resolve(__dirname, '../dotenv'))) {
-  dotenv.config({path: path.resolve(__dirname, '../dotenv')});
-} else {
-  dotenv.config({path: path.resolve(__dirname, '../../.env')});
+
+  const rootDotenv = path.resolve(__dirname, '../../dotenv');
+  if (existsSync(rootDotenv)) {
+    return rootDotenv;
+  }
+
+  const buildDotenv = path.resolve(__dirname, '../dotenv');
+  if (existsSync(buildDotenv)) {
+    return buildDotenv;
+  }
+
+  return path.resolve(__dirname, '../../.env');
 }
+
+export const activeConfigPath = getActiveConfigPath();
+
+dotenv.config({path: activeConfigPath});
 
 console.info(
   banner.render(
@@ -256,6 +268,8 @@ const notifications = {
       rx6800: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RX6800),
       rx6800xt: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RX6800XT),
       rx6900xt: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RX6900XT),
+      rx9070: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RX9070),
+      rx9070xt: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RX9070XT),
       ryzen5600: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RYZEN5600),
       ryzen5800: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RYZEN5800),
       ryzen5900: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RYZEN5900),
@@ -266,10 +280,13 @@ const notifications = {
       ryzen9600x: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RYZEN9600X),
       ryzen9700x: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RYZEN9700X),
       ryzen9900x: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RYZEN9900X),
+      ryzen9900x3d: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RYZEN9900X3D),
       ryzen9950x: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RYZEN9950X),
+      ryzen9950x3d: envOrArray(process.env.DISCORD_NOTIFY_GROUP_RYZEN9950X3D),
       sf: envOrArray(process.env.DISCORD_NOTIFY_GROUP_CORSAIR_SF),
       sonyps5c: envOrArray(process.env.DISCORD_NOTIFY_GROUP_SONYPS5C),
       sonyps5de: envOrArray(process.env.DISCORD_NOTIFY_GROUP_SONYPS5DE),
+      switch2: envOrArray(process.env.DISCORD_NOTIFY_GROUP_SWITCH2),
       'test:series': envOrArray(process.env.DISCORD_NOTIFY_GROUP_TEST),
       xboxss: envOrArray(process.env.DISCORD_NOTIFY_GROUP_XBOXSS),
       xboxsx: envOrArray(process.env.DISCORD_NOTIFY_GROUP_XBOXSX),
@@ -409,6 +426,8 @@ const nvidia = {
 const page = {
   height: 1080,
   inStockWaitTime: envOrNumber(process.env.IN_STOCK_WAIT_TIME),
+  lookupThreads: envOrNumber(process.env.LOOKUP_THREADS, 1),
+  randomizeLookupOrder: envOrBoolean(process.env.RANDOMIZE_LOOKUP_ORDER, false),
   screenshot: envOrBoolean(process.env.SCREENSHOT),
   screenshotDir: envOrString(process.env.SCREENSHOT_DIR, 'screenshots'),
   timeout: envOrNumber(process.env.PAGE_TIMEOUT, 30000),
@@ -474,6 +493,8 @@ const store = {
       rx6800: envOrNumber(process.env.MAX_PRICE_SERIES_RX6800),
       rx6800xt: envOrNumber(process.env.MAX_PRICE_SERIES_RX6800XT),
       rx6900xt: envOrNumber(process.env.MAX_PRICE_SERIES_RX6900XT),
+      rx9070: envOrNumber(process.env.MAX_PRICE_SERIES_RX9070),
+      rx9070xt: envOrNumber(process.env.MAX_PRICE_SERIES_RX9070XT),
       ryzen5600: envOrNumber(process.env.MAX_PRICE_SERIES_RYZEN5600),
       ryzen5800: envOrNumber(process.env.MAX_PRICE_SERIES_RYZEN5800),
       ryzen5900: envOrNumber(process.env.MAX_PRICE_SERIES_RYZEN5900),
@@ -484,10 +505,13 @@ const store = {
       ryzen9600x: envOrNumber(process.env.MAX_PRICE_SERIES_RYZEN9600X),
       ryzen9700x: envOrNumber(process.env.MAX_PRICE_SERIES_RYZEN9700X),
       ryzen9900x: envOrNumber(process.env.MAX_PRICE_SERIES_RYZEN9900X),
+      ryzen9900x3d: envOrNumber(process.env.MAX_PRICE_SERIES_RYZEN9900X3D),
       ryzen9950x: envOrNumber(process.env.MAX_PRICE_SERIES_RYZEN9950X),
+      ryzen9950x3d: envOrNumber(process.env.MAX_PRICE_SERIES_RYZEN9950X3D),
       sf: envOrNumber(process.env.MAX_PRICE_SERIES_CORSAIR_SF),
       sonyps5c: envOrNumber(process.env.MAX_PRICE_SERIES_SONYPS5C),
       sonyps5de: envOrNumber(process.env.MAX_PRICE_SERIES_SONYPS5DE),
+      switch2: envOrNumber(process.env.MAX_PRICE_SERIES_SWITCH2),
       'test:series': envOrNumber(process.env.MAX_PRICE_SERIES_TEST),
       'udm-pro': envOrNumber(process.env.MAX_PRICE_SERIES_UDM_PRO),
       'udm-us': envOrNumber(process.env.MAX_PRICE_SERIES_UDM_US),

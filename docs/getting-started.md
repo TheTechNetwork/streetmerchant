@@ -25,6 +25,26 @@ You do not need any computer skills, smarts, or anything of that nature. You are
 
 At any point you want the program to stop, use ++ctrl+c++.
 
+## Using the web dashboard
+
+If you want to manage streetmerchant from the browser while it is running, set `WEB_PORT` in your `dotenv` file.
+
+```shell
+WEB_PORT=8080
+```
+
+After you start the app, open `http://localhost:8080`.
+
+The dashboard includes:
+
+- A live matrix with selected stores across the top and selected series on the left.
+- Store, series, and model menus that update the running configuration.
+- A settings editor for the active `dotenv` file.
+- A restart button to reload the bot without closing the dashboard.
+
+???+ note
+    Filter changes made in the dashboard are persisted back to the active `dotenv` file. Some settings still require a restart before they fully take effect.
+
 ???+ tip
     Community based help can also be found on the [wiki](https://github.com/jef/streetmerchant/wiki). Feel free to check that out if you're having problems running. If you're still having problems running, you're probably not the first. Make some searches through the [GitHub issues](https://github.com/jef/streetmerchant/issues) before making one.
 
@@ -142,7 +162,7 @@ docker-compose down
      <pre><code>  const args: string[] = [
         '--no-sandbox',
         '--disable-setuid-sandbox'
-     c];</code></pre>                
+     ];</code></pre>                
 #### Setting up Heroku
 ```shell
 # To start
@@ -174,7 +194,7 @@ Back to the terminal that you left open.
 3. Then type `git add .`
 4. Once that finishes paste `git commit -am "COMMITMESSAGE"`, replacing `COMMITMESSAGE` with whatever commit message you'd like. This doesn't matter much.
 5. The last thing to do in the terminal is to push your repo to Heroku
-    1. Paste `git push heroku master`
+    1. Paste `git push heroku main`
         1. This will take a while
 #### Final steps
 1. On your Heroku app, click on the tab `Resources`
